@@ -8,36 +8,16 @@ Dim objweb
 Set objfs = CreateObject("Scripting.FileSystemObject")
 Set objws = WScript.CreateObject("WScript.Shell")
 Set objweb = CreateObject("WinHttp.WinHttpRequest.5.1")
+' Disable proxy - use direct connection
+objweb.setProxy 1
 
 ' Set proxy settings, called on library import for objweb.
+' Disabled - using direct connection instead
 Sub SetProxy()
-    ' WScript.echo "kkotari: pyenv-lib.vbs proxy..!"
-    Dim httpProxy
-    Dim proxyArr
-
-    httpProxy = objws.Environment("Process")("http_proxy")
-    If httpProxy = "" Then
-        httpProxy = objws.Environment("Process")("https_proxy")
-    End If
-
-    If httpProxy = "" Then Exit Sub
-
-    httpProxy = Replace(Replace(httpProxy, "http://", ""), "https://", "")
-    If Right(httpProxy, 1) = "/" Then
-        httpProxy = Left(httpProxy, Len(httpProxy) - 1)
-    End If
-
-    If InStr(1, httpProxy, "@") > 0 Then
-        ' The http_proxy environment variable is set with basic authentication
-        ' WinHttp seems to work fine without the credentials, so we should be
-        ' okay with just the hostname/port part
-        proxyArr = Split(httpProxy, "@")
-        objweb.setProxy 2, proxyArr(1)
-    Else
-        objweb.setProxy 2, httpProxy
-    End If
+    ' Proxy is disabled - do nothing
 End Sub
-SetProxy
+' Don't call SetProxy - already set to direct connection above
+' SetProxy
 
 Dim strCurrent
 Dim strPyenvHome
